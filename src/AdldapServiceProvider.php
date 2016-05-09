@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel;
+namespace MichaelB\Lumen;
 
 use Adldap\Adldap;
 use Adldap\Connections\Configuration;

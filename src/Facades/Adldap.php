@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel\Facades;
+namespace MichaelB\Lumen\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

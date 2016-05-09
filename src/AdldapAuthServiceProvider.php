@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel;
+namespace MichaelB\Lumen;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;

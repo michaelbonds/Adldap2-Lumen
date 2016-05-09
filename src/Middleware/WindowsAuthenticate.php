@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel\Middleware;
+namespace MichaelB\Lumen\Middleware;
 
 use Adldap\Laravel\Traits\ImportsUsers;
 use Adldap\Models\User;

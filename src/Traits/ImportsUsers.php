@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel\Traits;
+namespace MichaelB\Lumen\Traits;
 
 use Adldap\Laravel\Facades\Adldap;
 use Adldap\Models\User;

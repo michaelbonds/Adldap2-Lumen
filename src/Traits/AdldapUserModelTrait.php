@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel\Traits;
+namespace MichaelB\Lumen\Traits;
 
 trait AdldapUserModelTrait
 {

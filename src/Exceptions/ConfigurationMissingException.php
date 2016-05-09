@@ -1,6 +1,6 @@
 <?php
 
-namespace Adldap\Laravel\Exceptions;
+namespace MichaelB\Lumen\Exceptions;
 
 class ConfigurationMissingException extends \Exception
 {
