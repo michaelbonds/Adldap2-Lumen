@@ -18,24 +18,11 @@ class CopyConfig extends Command
     protected $description = 'Copy configuration to config directory';
 
     /**
-     * @var \Laravel\Lumen\Application
-     */
-    protected $lumen;
-
-    /**
-     * @var string
-     */
-    protected $configPath;
-
-    /**
      * CopyConfig constructor.
      */
     public function __construct()
     {
         parent::__construct();
-        
-        $this->lumen = $this->laravel;
-        $this->configPath = __DIR__.'/../Config/';
     }
 
     /**
@@ -43,63 +30,126 @@ class CopyConfig extends Command
      */
     public function handle()
     {
-        $this->copyAuth();
-        $this->copyConfig();
+        $config_dir = $this->basePath().'/'.$this->appConfigDirectory();
+        
+        if (! $this->isDirectory($config_dir)) {
+            $this->laravel->make('files')->makeDirectory($config_dir);
+        }
+        
+        $this->copyAdldapAuth();
+        $this->copyAdldapConfig();
+        $this->copyLumenAuthConfig();
+        
+        $this->comment("config files copied!");
     }
 
     /**
      * @return int
      */
-    private function copyAuth()
+    private function copyAdldapAuth()
     {
-        $from = $this->configPath.'auth.php';
-        $to = $this->getBasePath().'/'.$this->getAppConfigDirectory().'/adldap_auth.php';
-
-        return $this->copy($from, $to);
-    }
-
-    /**
-     * @return int
-     */
-    private function copyConfig()
-    {
-        $from = $this->configPath.'config.php';
-        $to = $this->getBasePath().'/'.$this->getAppConfigDirectory().'/adldap.php';
+        $config_path = $this->configPath();
+        $from = "$config_path/auth.php";
+        $to = $this->toAppConfigPath('adldap_auth.php');
         
         return $this->copy($from, $to);
+    }
+
+    /**
+     * @return int
+     */
+    private function copyAdldapConfig()
+    {
+        $config_path = $this->configPath();
+        $from = "$config_path/config.php";
+        $to = $this->toAppConfigPath('adldap.php');
+        
+        return $this->copy($from, $to);
+    }
+
+    /**
+     * @return int
+     */
+    private function copyLumenAuthConfig()
+    {
+        $base_path = $this->basePath();
+        $from = "$base_path/vendor/laravel/lumen-framework/config/auth.php";
+        $to = $this->toAppConfigPath('auth.php');
+        
+        return $this->copy($from, $to);
+    }
+
+    /**
+     * @return string
+     */
+    private function basePath()
+    {
+        return $this->laravel->basePath();
+    }
+
+    /**
+     * @return string
+     */
+    private function appConfigDirectory()
+    {
+        $directory = $this->option('directory');
+        return ($directory ?: 'config');
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return string
+     */
+    private function toAppConfigPath($filename = '')
+    {
+        $base_path = $this->basePath();
+        $config = $this->appConfigDirectory();
+
+        return "$base_path/$config/$filename";
     }
 
     /**
      * @param string $from
      * @param string $to
      *
-     * @return int
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return bool
      */
     private function copy($from = '', $to = '')
     {
-        $filesystem = $this->lumen->make('files');
+        if ( ! $this->exists($to)) {
+            return copy($from, $to);
+        }
         
-        $file = $filesystem->get($from);
-        
-        return $filesystem->put($to, $file);
+        $this->error("$to already exists!");
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return mixed
+     */
+    private function exists($path = '')
+    {
+        return $this->laravel->make('files')->exists($path);
     }
 
     /**
      * @return string
      */
-    private function getBasePath()
+    private function configPath()
     {
-        return $this->lumen->basePath();
+        return __DIR__.'/../Config';
     }
 
     /**
-     * @return string
+     * @param $config_dir
+     *
+     * @return bool
      */
-    private function getAppConfigDirectory()
+    private function isDirectory($config_dir)
     {
-        $directory = $this->option('directory');
-        return ($directory ?: 'config');
+        return $this->laravel->make('files')->isDirectory($config_dir);
     }
 
 }
