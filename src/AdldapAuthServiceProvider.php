@@ -1,6 +1,6 @@
 <?php
 
-namespace MichaelB\Lumen;
+namespace MichaelB\Lumen\Adldap;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;

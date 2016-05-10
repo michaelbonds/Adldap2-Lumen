@@ -17,12 +17,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Adldap\\Laravel\\": "src/"
+            "MichaelB\\Lumen\\Adldap\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Adldap\\Laravel\\Tests\\": "tests/"
+            "MichaelB\\Lumen\\Adldap\\Tests\\": "tests/"
         }
     }
 }

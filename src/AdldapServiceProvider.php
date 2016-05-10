@@ -1,13 +1,14 @@
 <?php
 
-namespace MichaelB\Lumen;
+namespace MichaelB\Lumen\Adldap;
 
 use Adldap\Adldap;
 use Adldap\Connections\Configuration;
 use Adldap\Connections\Manager;
 use Adldap\Connections\Provider;
 use Adldap\Contracts\AdldapInterface;
-use Adldap\Laravel\Exceptions\ConfigurationMissingException;
+use MichaelB\Lumen\Adldap\Commands\CopyConfig;
+use MichaelB\Lumen\Adldap\Exceptions\ConfigurationMissingException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,6 +33,8 @@ class AdldapServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->commands(CopyConfig::class);
+        
         // Bind the Adldap instance to the IoC
         $this->app->singleton('adldap', function (Application $app) {
             $config = $app->make('config')->get('adldap');

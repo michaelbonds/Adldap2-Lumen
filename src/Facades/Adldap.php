@@ -1,6 +1,6 @@
 <?php
 
-namespace MichaelB\Lumen\Facades;
+namespace MichaelB\Lumen\Adldap\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

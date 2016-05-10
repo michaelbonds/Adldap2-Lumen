@@ -1,8 +1,8 @@
 <?php
 
-namespace MichaelB\Lumen\Traits;
+namespace MichaelB\Lumen\Adldap\Traits;
 
-use Adldap\Laravel\Facades\Adldap;
+use MichaelB\Lumen\Adldap\Facades\Adldap;
 use Adldap\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;

@@ -1,8 +1,8 @@
 <?php
 
-namespace MichaelB\Lumen\Middleware;
+namespace MichaelB\Lumen\Adldap\Middleware;
 
-use Adldap\Laravel\Traits\ImportsUsers;
+use MichaelB\Lumen\Adldap\Traits\ImportsUsers;
 use Adldap\Models\User;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;

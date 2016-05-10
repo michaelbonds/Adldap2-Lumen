@@ -25,19 +25,15 @@ It includes:
 Insert Adldap2-Laravel into your `composer.json` file:
 
 ```json
-"adldap2/adldap2-laravel": "2.0.*",
+"michaelb/adldap2-lumen": "1.0.*",
 ```
 
 Then run `composer update`.
 
-Once finished, insert the service provider in your `config/app.php` file:
+Register the service provider in bootstrap/app.php
 ```php
-Adldap\Laravel\AdldapServiceProvider::class,
-```
-
-Then insert the facade:
-```php
-'Adldap' => Adldap\Laravel\Facades\Adldap::class
+// ...
+$app->register(MichaelB\Lumen\AdldapServiceProvider::class);
 ```
 
 Publish the configuration file by running:
@@ -73,7 +69,7 @@ class UserController extends Controller
      * @var Adldap
      */
     protected $adldap;
-    
+
     /**
      * Constructor.
      *
@@ -83,7 +79,7 @@ class UserController extends Controller
     {
         $this->adldap = $adldap;
     }
-    
+
     /**
      * Displays the all LDAP users.
      *
@@ -92,7 +88,7 @@ class UserController extends Controller
     public function index()
     {
         $users = $this->adldap->getProvider('default')->search()->users()->get();
-        
+
         return view('users.index', compact('users'));
     }
 }
@@ -333,11 +329,11 @@ true sets the `adldapUser` property on your configured auth User model to the Ad
 ```php    
 if (Auth::attempt($credentials)) {
     $user = Auth::user();
-    
+
     var_dump($user); // Returns instance of App\User;
-    
+
     var_dump($user->adldapUser); // Returns instance of Adldap\Models\User;
-    
+
     // Retrieving the authenticated LDAP users groups
     $groups = $user->adldapUser->getGroups();
 }
@@ -391,9 +387,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 > **Note**: This feature was introduced in `v1.3.9`. You'll will need to re-publish the Adldap Auth configuration file
 to receive this option.
 
-The login fallback option allows you to login as a local database user using the Eloquent authentication driver if 
+The login fallback option allows you to login as a local database user using the Eloquent authentication driver if
 active directory authentication fails. This option would be handy in environments where:
- 
+
 - You may have some active directory users and other users registering through the website itself (user does not exist in your AD).
 - Local development where your AD server may be unavailable
 
@@ -483,7 +479,7 @@ if (Auth::attempt($credentials)) {
 } else {
     // Login failed, swap and try other connection.
     Config::set('adldap_auth.connection', 'other-connection');
-    
+
     if (Auth::attempt($credentials)) {
         $auth = true; // Passed logging in with other connection.
     }
