@@ -49,7 +49,7 @@ class CopyConfig extends Command
     private function copyAdldapAuth()
     {
         $config_path = $this->configPath();
-        $from = "$config_path/auth.php";
+        $from = "$config_path/adldap_auth.php";
         $to = $this->toAppConfigPath('adldap_auth.php');
         
         return $this->copy($from, $to);
@@ -61,7 +61,7 @@ class CopyConfig extends Command
     private function copyAdldapConfig()
     {
         $config_path = $this->configPath();
-        $from = "$config_path/config.php";
+        $from = "$config_path/adldap.php";
         $to = $this->toAppConfigPath('adldap.php');
         
         return $this->copy($from, $to);
