@@ -40,7 +40,7 @@ trait ImportsUsers
         if (is_array($username)) {
             $username = Arr::get($username, 0);
         }
-
+        
         // Try to retrieve the model from the model key and AD username.
         $model = $this->createModel()->newQuery()->where([$key => $username])->first();
 
@@ -132,7 +132,7 @@ trait ImportsUsers
         }
 
         // Always encrypt the model password by default.
-        $model->password = bcrypt($password);
+        $model->password = app('hash')->make($password);
 
         return $model;
     }
