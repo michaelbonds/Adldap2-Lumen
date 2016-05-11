@@ -7,9 +7,11 @@ use Adldap\Connections\Configuration;
 use Adldap\Connections\Manager;
 use Adldap\Connections\Provider;
 use Adldap\Contracts\AdldapInterface;
+use MichaelB\Lumen\Adldap\Auth\AdldapGuard;
 use MichaelB\Lumen\Adldap\Commands\CopyConfig;
 use MichaelB\Lumen\Adldap\Exceptions\ConfigurationMissingException;
-use Illuminate\Contracts\Foundation\Application;
+//use Illuminate\Contracts\Foundation\Application;
+use Laravel\Lumen\Application;
 use Illuminate\Support\ServiceProvider;
 
 class AdldapServiceProvider extends ServiceProvider
@@ -21,11 +23,7 @@ class AdldapServiceProvider extends ServiceProvider
     {
         $config = __DIR__.'/Config/config.php';
 
-        $this->publishes([
-            $config => config_path('adldap.php'),
-        ], 'adldap');
-
-        $this->mergeConfigFrom($config, 'adldap');
+//        $this->mergeConfigFrom($config, 'adldap');
     }
 
     /**
@@ -37,11 +35,14 @@ class AdldapServiceProvider extends ServiceProvider
         
         // Bind the Adldap instance to the IoC
         $this->app->singleton('adldap', function (Application $app) {
-            $config = $app->make('config')->get('adldap');
+//            $config = $app->make('config')->get('adldap');
+            $app->configure('adldap');
+
+            $config = config('adldap');
 
             // Verify configuration exists.
             if (is_null($config)) {
-                $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan vendor:publish --tag="adldap"`.';
+                $message = 'Adldap configuration could not be found. Try re-publishing using `php artisan adldap:config`.';
 
                 throw new ConfigurationMissingException($message);
             }

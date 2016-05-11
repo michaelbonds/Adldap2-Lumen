@@ -46,7 +46,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
         if ($query->getConnection()->isBound()) {
             // Get the username input attributes.
             $attributes = $this->getUsernameAttribute();
-
+            
             // Get the input key.
             $key = key($attributes);
 
@@ -131,7 +131,7 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getPasswordKey()
     {
-        return Config::get('adldap_auth.password_key', 'password');
+        return config('adldap_auth.password_key', 'password');
     }
 
     /**
@@ -142,6 +142,6 @@ class AdldapAuthUserProvider extends EloquentUserProvider
      */
     protected function getLoginFallback()
     {
-        return Config::get('adldap_auth.login_fallback', false);
+        return config('adldap_auth.login_fallback', false);
     }
 }
