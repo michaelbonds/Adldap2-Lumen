@@ -1,26 +1,22 @@
 # Adldap2 - Laravel
 
-[![Build Status](https://img.shields.io/travis/Adldap2/Adldap2-Laravel.svg?style=flat-square)](https://travis-ci.org/Adldap2/Adldap2-Laravel)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/Adldap2/Adldap2-laravel/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/Adldap2/Adldap2-laravel/?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/adldap2/adldap2-laravel.svg?style=flat-square)](https://packagist.org/packages/adldap2/adldap2-laravel)
-[![Latest Stable Version](https://img.shields.io/packagist/v/adldap2/adldap2-laravel.svg?style=flat-square)](https://packagist.org/packages/adldap2/adldap2-laravel)
-[![License](https://img.shields.io/packagist/l/adldap2/adldap2-laravel.svg?style=flat-square)](https://packagist.org/packages/adldap2/adldap2-laravel)
+## Forward
+This package was forked from [Adldap2/Adldap2-Laravel](https://github.com/Adldap2/Adldap2-laravel). I tried to keep most of the functionality as described in the original Laravel package, but I haven't had time to test everything out. If you have any issues, feel free to submit an issue/pull-request.
+Also, the documentation below might not be entirely correct. Haven't had the time to test that, either.
 
 ## Description
 
-Adldap2 - Laravel allows easy configuration, access, and management to active directory utilizing the root
+Adldap2 - Lumen allows easy configuration, access, and management to active directory utilizing the root
 [Adldap2 Repository](http://www.github.com/Adldap2/Adldap2).
 
 It includes:
 
-- An Adldap contract (`Adldap\Contracts\AdldapInterface`) for dependency injection through Laravel's IoC
+- An Adldap contract (`MichaelB\Lumen\Adldap\Contracts\AdldapInterface`) for dependency injection through Laravel's IoC
 - An Auth driver for easily allowing users to login to your application using active directory
-- An Adldap facade (`Adldap\Laravel\Facades\Adldap`) for easily retrieving the Adldap instance from the IoC
+- An Adldap facade (`MichaelB\Lumen\Adldap\Facades\Adldap`) for easily retrieving the Adldap instance from the IoC
 - Support for multiple LDAP connections
 
 ## Installation
-
-[Quick Start - From Scratch](quick-start.md)
 
 Insert Adldap2-Laravel into your `composer.json` file:
 
@@ -34,11 +30,12 @@ Register the service provider in bootstrap/app.php
 ```php
 // ...
 $app->register(MichaelB\Lumen\AdldapServiceProvider::class);
+class_alias(MichaelB\Lumen\Adldap\Facades\Adldap::class, 'Adldap');
 ```
 
 Publish the configuration file by running:
 ```bash
-php artisan vendor:publish --tag="adldap"
+php artisan adldap:config
 ```
 
 Now you're all set!
@@ -61,7 +58,7 @@ if (Adldap::getProvider('default')->auth()->attempt($username, $password)) {
 
 Or you can inject the Adldap contract:
 ```php
-use Adldap\Contracts\AdldapInterface;
+use MichaelB\Lumen\Adldap\Contracts\AdldapInterface;
 
 class UserController extends Controller
 {
@@ -106,51 +103,18 @@ to the users as you would a regular laravel application.
 
 ### Installation
 
-#### Laravel 5.1
+#### Lumen 5.2
 
-Insert the `AdldapAuthServiceProvider` into your `config/app.php` file:
+Register the `AdldapAuthServiceProvider` into your `bootstrap/app.php` file:
 
 ```php
-Adldap\Laravel\AdldapAuthServiceProvider::class,
+$app->register(MichaelB\Lumen\Adldap\AdldapAuthServiceProvider::class);
 ```
 
 Publish the auth configuration:
 
 ```bash
-php artisan vendor:publish --tag="adldap"
-```
-
-Change the auth driver in `config/auth.php` to `adldap`:
-
-```php
-/*
-|--------------------------------------------------------------------------
-| Default Authentication Driver
-|--------------------------------------------------------------------------
-|
-| This option controls the authentication driver that will be utilized.
-| This driver manages the retrieval and authentication of the users
-| attempting to get access to protected areas of your application.
-|
-| Supported: "database", "eloquent"
-|
-*/
-
-'driver' => 'adldap',
-```
-
-#### Laravel 5.2
-
-Insert the `AdldapAuthServiceProvider` into your `config/app.php` file:
-
-```php
-Adldap\Laravel\AdldapAuthServiceProvider::class,
-```
-
-Publish the auth configuration:
-
-```bash
-php artisan vendor:publish --tag="adldap"
+php artisan adldap:config
 ```
 
 Open your `config/auth.php` configuration file and change the following:
@@ -224,47 +188,9 @@ Now add the `adldap` provider to your `providers` array:
 
 ### Usage
 
-#### Username Attributes
-
-Inside your `config/adldap_auth.php` file there is a configuration option named `username_attribute`. The key of the
-array indicates the input name of your login form, and the value indicates the LDAP attribute that this references.
-
-This option just allows you to set your input name to however you see fit, and allow different ways of logging in a user.
-
-In your login form, change the username form input name to your configured input name.
-
-By default this is set to `email`:
-```html
-<input type="text" name="email" />
-
-<input type="password" name="password" />
-```
-
-You'll also need to add the following to your AuthController if you're not overriding the default postLogin method.
-```php
-protected $username = 'email';
-```
-
-If you'd like to use the users `samaccountname` to login instead, just change your input name and auth configuration:
-```html
-<input type="text" name="username" />
-
-<input type="password" name="password" />
-```
-
-> **Note**: If you're using the `username` input field, make sure you have the `username` field inside your users database
-table as well. By default, laravel's migrations use the `email` field.
-
-Inside `config/adldap_auth.php`
-```php
-'username_attribute' => ['username' => 'samaccountname'],
-```
-
-> **Note**: The actual authentication is done with the `login_attribute` inside your `config/adldap_auth.php` file.
-
 #### Logging In
 
-Login a user regularly using `Auth::attempt($credentials);`. Using `Auth::user()` when a user is logged in
+Login a user regularly using `app('auth')->attempt($credentials);`. Using `app('auth')->user()` when a user is logged in
 will return your configured `App\User` model in `config/auth.php`.
 
 #### Synchronizing Attributes
@@ -478,9 +404,9 @@ if (Auth::attempt($credentials)) {
     $auth = true; // Logged in successfully
 } else {
     // Login failed, swap and try other connection.
-    Config::set('adldap_auth.connection', 'other-connection');
+    config(['adldap_auth.connection' => 'other-connection']);
 
-    if (Auth::attempt($credentials)) {
+    if (app('auth')->attempt($credentials)) {
         $auth = true; // Passed logging in with other connection.
     }
 }
